@@ -1,0 +1,126 @@
+
+.vatican-logo {
+	font-family: 'Rammetto One', cursive;
+}
+
+.vatican-logo .name {
+	color: white;
+	text-shadow: 1px 1px 1px #000;	
+}
+
+.vatican-logo .extension {
+	text-shadow:  1px 1px 1px #fff;
+}
+
+.motto {
+	font-family: 'Allan', cursive;
+	margin-top: 7px;
+	color: #ddd;
+	font-size: 23px;
+	text-align: right;
+}
+
+.header-text {
+	font-family: 'Anton', sans-serif;
+	color: #618EB4;
+	font-size: 28px;
+	text-shadow: 1px 1px 0px #383872;
+}
+
+#step2 .sub-step3 img {
+	width: 80%;
+}
+#step2 .sub-step2 {
+	border-left: 1px solid #eee;
+	border-right: 1px solid #eee;
+}
+
+
+.number {
+	border: 5px solid #444;
+	font-size:35px;
+	text-align:center;
+	border-radius: 40px;
+	width: 60px;
+	height: 60px;
+	margin: 0 auto;
+	font-weight: bold;
+}
+
+.code {
+	background: #444;
+	padding: 10px;
+	border: 1px solid #161412;
+	font-style: italic;
+	color: #eee;
+	border-radius: 10px;	
+}
+
+.page-header {
+	font-family: 'Dosis', sans-serif;
+}
+
+.jumbotron {
+	background: #444;
+}
+
+.footer {
+	background: #444;
+	font-family: 'Allan', cursive;
+	font-size: 20px;
+	color: #eee;
+	margin-bottom: 0;
+}
+.social-icons {
+	margin-top: -17px;
+	float:right;
+}
+.footer a {
+	font-size: 45px;
+	color: #ccc;
+	transition: color 1s;
+}
+.footer a:hover {
+	color: #eee;
+	text-decoration: none;
+}
+
+.second-footer {
+	margin-top: 0;
+	background: #686666;
+}
+
+.second-footer h2 {
+	font-family: 'Dosis', sans-serif;
+	color: #eee;
+}
+.second-footer img {
+	border-radius: 60px;
+}
+
+.second-footer .about-me {
+
+	text-align: center;
+}
+
+.second-footer p {
+	color: #eee;
+	padding: 20px;
+}
+
+.second-footer a {
+	color: #ed9c28;
+}
+.second-footer .mini-social {
+	font-size: 20px;
+	margin: 0 auto;
+}
+
+.second-footer .mini-social a{
+	color: #ddd;
+	transition: color 1s;
+}
+.second-footer .mini-social a:hover{
+	color: #fff;
+	text-decoration: none;
+}
