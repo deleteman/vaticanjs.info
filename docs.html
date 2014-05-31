@@ -1,0 +1,403 @@
+<!DOCTYPE html>	
+<html>
+<head>
+	<title>Vatican.js - Documentation</title>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link href="./css/site.css" rel="stylesheet" type="text/css">
+	<link href="./css/font-awesome.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+		.container {
+			position: relative;
+		}
+		#sidebar {
+			position: fixed;
+			left:0;
+			height: 100%;
+			width: 240px;	
+			overflow: scroll;
+			padding: 5px;
+		}
+		#content {
+			position: fixed;
+			height: 100%;
+			left: 240px;
+			overflow: scroll;
+			padding: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div id="sidebar">
+			<h2 class="text-center">Vatican.js <br><small>(v 1.2.0) <br>Documentation</small></h2>	
+			<ul>
+				<li>
+					<a href="#basic-config">Basic configuration</a>
+					<ul class="sub-menu">
+						<li><a href="#config-file">Default config file</a></li>
+						<li><a href="#overwrite-config">Overwriting config file</a></li>
+						<li><a href="#cors">CORS configuration</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#cli">Command Line Tools</a>
+					<ul class="sub-menu">
+						<li><a href="#new-project">Creating a new project</a></li>	
+						<li><a href="#listing-routes">Listing routes</a> </li>
+						<li><a href="#new-handler">Creating a new handler</a> </li>
+					</ul>
+				</li>	
+				<li><a href="#anno">Annotations</a></li>
+				<li><a href="#handlers">Handlers</a></li>
+				<li>
+					<a href="#req-res">Request & Response</a>
+					<ul class="sub-menu">
+						<li><a href="#request">Request</a></li>
+						<li><a href="#request-parser">Custome Request parser</a></li>
+						<li><a href="#response">Response</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#processors">Processors</a>
+					<ul class="sub-menu">
+						<li><a href="#pre-pro">Request Pre-processor</a></li>	
+						<li><a href="#post-pro">Response Post-processor</a></li>
+						<li><a href="#error-handler">Error handler</a></li>
+					</ul>
+				</li>
+			</ul>
+			<div class="text-center">
+				<a href="/" class="btn btn-primary "><i class="fa fa-arrow-left"></i> Back home</a>
+			</div>
+		</div>
+		<div id="content">
+<h1 >Vatican</h1>
+<p >
+	Welcome to Vatican.js' documentation. Here you'll find the latest explanation to what's going on and how to use this library.
+</p>
+<p>
+	For more information, checkout the project's <a href="http://github.com/deleteman/vatican">Readme file</a>
+</p>
+<h2 >
+<a  class="anchor" name="basic-config"></a>Basic configuration</h2>
+<h3>Installation</h3>
+<p >To install Vatican just run:</p>
+<pre ><code>$ npm install vatican
+</code></pre>
+
+<h3><a name="default-config"></a>Default Config File</h3>
+<p >Setting up the vatican server is quite easy:</p>
+<pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
+
+var</span> app</span> = <span class="k">new vatican<span class="p">();
+
+app</span>.start<span class="p">();
+</pre>
+<p >The configuration for the server will be loaded from a json file on your project's root called <b>"vatican-conf.json"</b>.
+The configuration options are the following:</p>
+<ul class="task-list unchanged">
+<li >
+<em>port</em>: The port where the server will be listening to.</li>
+<li >
+<em>handlers</em>: The folder where all the handlers are stored.</li>
+<li >
+<em>cors</em> <em>(optional)</em>: CORS header options.</li>
+<li >
+<em>requestParser</em> <em>(optional)</em> : The path to the custom request parser file.</li>
+</ul>
+<h3 >
+<a  class="anchor" name="overwrite-config"></a>Overwriting the config file</h3>
+<p >If the configuration for the server needs to be dynamic, then the json object can be passed to the constructor like so:</p>
+<pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
+
+var</span> app</span> = <span class="k">new vatican<span class="p">({
+    port</span>:</span> <span class="mi">9000<span class="p">,
+    handlers</span>:</span> <span class="s2">"./lib"<span class="p">,
+    cors</span>: <span class="kc">true
+});
+
+app</span>.start<span class="p">();
+</pre>
+<p ><em>If an object is received by the constructor, the config file will be ignored.</em></p>
+<h3 >
+<a  class="anchor" name="cors"></a>CORS configuration</h3>
+<p >By default, <b>Cross Origin Resource Sharing</b> is disabled on Vatican, but can be enabled by setting this option to <em>true</em> (which sets Access-Allow-Origin to "*" and Access-Control-Allow-Methods to "*"") or by setting specific options:</p>
+<ul class="task-list unchanged">
+<li >
+<em>access_allow_origin</em>: Access-Allow-Origin</li>
+<li >
+<em>access_control_allow_methods</em>:  Access-Control-Allow-Methods</li>
+<li >
+<em>access_control_expose_headers</em>: Access-Control-Expose-Headers</li>
+<li >
+<em>access_control_max_age</em>: Access-Control-Max-Age</li>
+<li >
+<em>access_control_allow_credentials</em>: Access-Control-Allow-Credentials</li>
+<li >
+<em>access_control_allow_headers</em>: Access-Control-Allow-Headers</li>
+</ul>
+<p>
+
+Here is an example, that will specify that access from <i>mydomain.com</i> is posible, that the <i>X-Foo</i> header is valid and that the following methods are valid: <i>GET, POST, PUT, DELETE, OPTIONS</i>
+
+Access-Control-Allow-Origin: http://mydomain.com
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: X-Foo
+
+<pre >var vatican = require("vatican");
+
+var app = new vatican({
+    port:9000,
+    handlers: "./lib",
+    cors: <b>{
+    	access_control_allow_headers: "X-Foo",
+    	access_allow_origin: "http://mydomain.com",
+	access_control_allow_methods: "GET, POST, PUT, DELETE, OPTIONS"
+	}</b>
+});
+
+app.start();
+</pre>
+</p>
+<h2 >
+<a  class="anchor" name="cli"></a>Command line tool</h2>
+<p >Vatican comes with a command line tool to help with tasks like listing the routes of your api, and creating new handlers.</p>
+<h3 >
+<a  class="anchor" name="new-project"></a>Create a new project</h3>
+<p >Using Vatican's cli tool, you can start up your project, just by doing the following:</p>
+<pre ><code>$ vatican new library -p 5000 -h ./handlers
+</code></pre>
+<p >This will create a new folder, with the sub-folder <em>handlers</em> inside. Also, it'll create a <em>vatican-conf.json</em> file, with the port and handler configuration there.</p>
+<p >The <em>-p</em> and <em>-h</em> attributes are optional, and by default, they will be set to:</p>
+<ul class="task-list unchanged">
+<li >
+<em>-p</em>: 8753</li>
+<li >
+<em>-h</em>: "./handlers"</li>
+</ul>
+
+<h3 >
+<a class="anchor" name="listing-routes"></a>Listing routes</h3>
+<p >The command to list all routes is:</p>
+<pre ><code>your-project-folder$ vatican list
+</code></pre>
+<div class="alert alert-info">
+	<p ><i class="fa fa-info-circle"></i> By default, <b>Vatican.js</b> will read the configuration from the <em>vatican-config.json</em> file to determine where to read the handlers data from. 
+		<br>This configuration can be ovewritten by passing the "-h" modifier to the command:</p>
+	<pre ><code>your-project-folder$ vatican list  <b>-h ./customFolder</b>
+	</code></pre>
+</div>
+The output of this command will list all the routes, with their associated HTTP method, handler file and handler method used.
+<h3 >
+<a  class="anchor" name="new-handler"></a>Creating a new Handler</h3>
+<p >To add a new <a href="#handlers">handler</a> to the project, you just pass it's name and it's actions, like so:</p>
+<pre ><code>your-project-folder$ vatican g books list get delete newBook
+</code></pre>
+<p >And a new handler file, called <em>books.js</em> will be saved inside your handlers folder, and will look like this:</p>
+<pre >function</span> Books() <span class="p">{}
+<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???) 
+Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">list</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+
+<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
+Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">get</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+
+<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
+Books</span>.</span>prototype</span><span class="p">.</span><span class="k">delete</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+
+<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
+Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">newBook</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+</pre>
+
+<div class="alert alert-info">
+	<p ><i class="fa fa-info-circle"></i> By default, <b>Vatican.js</b> will read the configuration from the <em>vatican-config.json</em> file to determine where to save the new handler file. 
+		<br>This configuration can be ovewritten by passing the "-h" modifier to the command:</p>
+	<pre ><code>your-project-folder$ vatican g books list get delete newBook <b>-h ./customFolder</b>
+	</code></pre>
+</div>
+<p >The method on each endpoint will have to be manually set and the urls will have to be manually fixed by the developer.</p>
+
+<h2 >
+<a class="anchor" name="anno"></a>Annotations</h2>
+<p ><b>Vatican.js</b> supports the <b><em>@endpoint</em></b> annotation, which will tell it that a given method is responsible for handling all requests for a given endpoint.
+The parameters supported by this annotation are:</p>
+<ul class="task-list unchanged">
+<li >url: The url that represents the endpoint, can have url parameters, in the form of :name (i.e: /books/:id). These parameters will be available inside the request attribute received by the associated method.</li>
+<li >method: The HTTP Access method used.</li>
+</ul>
+Here is an example of a method being associated to an endpoint:
+<code><pre>
+	//....
+	<b>@endpoint (url:/books method: post)</b>
+	BooksHandler.prototype.newBook = function(req, res) {
+		//code goes here...
+	}	
+</pre></code>
+<h2 >
+<a class="anchor" name="handlers"></a>Handlers</h2>
+<p >Each endpoint will be tied to one piece of code, in <b>Vatican.js</b>, that piece of code will be a method inside a handler. 
+	<br>You can think of handlers like controllers, if you like MVC, they will 
+hold the methods that will be called on each request, what you do inside them, is up to you.</p>
+<p >Here is an example of a regular handler:</p>
+<pre >module</span>.</span>exports = <span class="nx">hndlr<span class="p">;
+
+function</span> Hndlr<span class="p">(){
+
+};
+
+<span class="err">@</span>endpoint</span> (</span>url</span>:</span> <span class="sr">/books/</span> <span class="nx">method<span class="o">: <span class="nx">get<span class="p">)
+Hndlr</span>.</span>prototype</span><span class="p">.</span><span class="nx">list</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{
+    res</span>.</span>send</span><span class="p">(<span class="s2">"List of books!"<span class="p">);
+}
+
+<span class="c1">//The annotation can be commented out, so your text editor won't complain</span>
+<span class="c1">//@endpoint (url: /books/:id method: get)</span>
+Hndlr</span>.</span>prototype</span><span class="p">.</span><span class="nx">getData</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{
+    res</span>.</span>setHeader</span><span class="p">([</span><span class="s2">"Content-type"</span><span class="p">, <span class="s2">"text/html"<span class="p">]);
+    res</span>.</span>send</span><span class="p">(<span class="s2">"&lt;h1&gt;Book info goes here&lt;/h1&gt;"<span class="p">);
+}
+
+<span class="err">@</span>endpoint</span> (</span>url</span>:</span> <span class="sr">/books/</span> <span class="nx">method<span class="o">: <span class="nx">post<span class="p">)
+Hndlr</span>.</span>prototype</span><span class="p">.</span><span class="nx">newBook</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{
+    res</span>.</span>statusCode = <span class="mi">401<span class="p">;
+    res</span>.</span>send</span><span class="p">(<span class="s2">"New book not implemented!"<span class="p">);
+}
+</pre>
+<div class="alert alert-info">
+	<p>
+		<i class="fa fa-info-circle"></i> It is important to use the above object notation when writing the code of your handlers because <b>Vatican.js</b> needs to parse the code in order to capture the annotations and associate them to the right method. Currently other
+		types of object notations will not work with the endponits.</p>
+</div>
+<h2 >
+<a  class="anchor" name="req-res"></a>Response &amp; Request</h2>
+<p >Each method associated to an endpoint, will receive 2 parameters on each request: the <b>request</b> and the <b>response</b> objects.
+The request object is the request object sent by node.js and will have the following fields of interest:</p>
+<ul class="task-list unchanged">
+<li ><b>url</b>: The url used to access the endpont</li>
+<li ><b>method</b>: The HTTP Access method used</li>
+<li ><b>params</b>: Will contain all parameters received on the request, grouped by how they were sent: <em>query</em> for all query params, <em>url</em> for all url params and <em>body</em> for all post/put params.</li>
+</ul>
+<h3 >
+<a  class="anchor" name="request-parser"></a>Custom request parser</h3>
+<p >By default, <b>Vatican.js</b> comes with a simple request parser, to gather things like the parameters, but there is an option to overwrite that parser by a custom one. The custom parser needs to have a <em>parse</em> method, that will receive the follow attributes:</p>
+<ul class="task-list unchanged">
+<li >An object with two attributes: url and method.</li>
+<li >The url template, as specified on the annotation</li>
+<li >The request from node.js</li>
+<li >And a callback function, that needs to be called passing it the final request parsed.</li>
+</ul>
+<h3 >
+<a  class="anchor" name="response"></a>Response </h3>
+<p >The response object is the original response passed by Node.js, with a few extra methods:</p>
+<ul class="task-list unchanged">
+<li ><b>send</b>: Will write all headers, text and will also end the response.</li>
+<li ><b>setHeaders</b>: Sets a header to be later sent by <em>send</em>. The format of the header is: <code>[ 'header-name', 'header-value' ]</code>
+</li>
+<li >
+	<b>statusCode</b>: This is not a method, but a property, and will be used by <em>send</em> to set the status code of the response.
+</li>
+</ul>
+<div class="alert alert-info">
+	<p>
+		<i class="fa-info-circle fa"></i> By default the statusCode returned is <b>200</b>.
+	</p>	
+</div> 
+<h2 >
+<a  class="anchor" name="processors"></a>Processors (A.K.A middleware support)</h2>
+<p ><b>Vatican.js</b> has the ability to support connect-like middleware, but here they're called <em>preprocessors</em> and <em>postprocessors</em>.</p>
+<h3 >
+<a class="anchor" name="pre-pro"></a>Request Pre-Processors</h3>
+<p >Much like Connect middleware, these are functions that receive 3 parameters: request, response and next. They are run sequentially in the same order they are added.
+In order to call the next preprocessor, each one needs to call the <em>next</em> function passed as the last parameter.</p>
+<p>
+	To add a pre-processor to the chain, just follow this example:
+	<pre>
+<code>
+var vatican = require("vatican");
+
+var app = new vatican();	
+
+app.preprocess(function(req, res, next) {
+    if(req.params.query.key === '123') { //we require a key to access all endpoints
+        next();
+    } else {
+        next("Error: invalid key") //Calls the error handlers queue
+    }
+})	
+</code></pre>
+</p>
+<h3 >
+<a  class="anchor" name="post-pro"></a>Response Post-Processors</h3>
+<p >Just like the <a href="#pre-pro">pre-processors</a>, only they run after the <em>req.send</em> call. <br>
+Can be used to affect all responses out of the API for things like response validation, response format, adding common headers, etc.</p>
+
+<p>
+	To add a post-processor to the chain, just follow this example:
+<pre>
+<code>
+
+var vatican = require("vatican");
+
+var app = new vatican();	
+
+//Post processor that formats the reponse as a json
+app.postprocess(function(req, res, next) {
+    if(typeof res.body != 'object') {
+        res.setHeader(['content-type', 'application/json'])
+        res.body = { response: res.body, url: req.url };
+    }
+    next();
+})
+</code>
+</pre>	
+</p>
+<h3 >
+<a class="anchor" name="error-handler"></a>Error handlers</h3>
+<p >Just like Express, <b>Vatican.js</b> will grab any pre or post processors with 4 parameters and treat it like an error handler. <br>
+	To trigger the errors, the processor functions need to call <em>next</em> and pass it the error object.</p>
+<p >Here is an example that uses several pre and post -processors and error handler</p>
+<pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
+
+var</span> app</span> = <span class="k">new vatican<span class="p">();
+
+<span class="c1">//Adds a preprocessor to the queue</span>
+app</span>.</span>preprocess</span><span class="p">(</span>function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">, <span class="nx">next<span class="p">) <span class="p">{
+    <span class="k">if</span>(</span>req</span><span class="p">.</span>params</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">key</span> ===</span> <span class="s1">'123'<span class="p">) <span class="p">{ <span class="c1">//we require a key to access all endpoints
+        next</span><span class="p">();
+    }</span> <span class="k">else</span> <span class="p">{
+        next</span>(</span><span class="s2">"Error: invalid key"</span><span class="p">) <span class="c1">//Calls the error handlers queue
+    }
+})
+
+<span class="c1">//Logs every request on console</span>
+app</span>.</span>preprocess</span><span class="p">(</span>function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">, <span class="nx">next<span class="p">) <span class="p">{
+    console</span>.</span>log</span><span class="p">(<span class="s2">"Request received: "<span class="p">)
+    console</span>.</span>log</span><span class="p">(</span><span class="nx">req</span><span class="p">.<span class="nx">url<span class="p">)
+    next</span><span class="p">();
+})
+
+<span class="c1">//Preprocessors error handler function logs on console</span>
+app</span>.</span>preprocess</span><span class="p">(</span>function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">, <span class="nx">next <span class="p">) <span class="p">{
+    console</span>.</span>log</span><span class="p">(</span><span class="s2">"ERROR FOUND: " + <span class="nx">err<span class="p">);
+    next</span>(err<span class="p">);
+})
+
+<span class="c1">//Sends the error message instead of the normal response</span>
+app</span>.</span>preprocess</span><span class="p">(</span>function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">, <span class="nx">next<span class="p">) <span class="p">{
+    res</span>.</span>send</span><span class="p">(</span><span class="s2">"There's been an error: " + <span class="nx">err<span class="p">)
+})
+
+<span class="c1">//Post processor that formats the reponse as a json</span>
+app</span>.</span>postprocess</span><span class="p">(</span>function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">, <span class="nx">next<span class="p">) <span class="p">{
+    <span class="k">if</span>(</span><span class="k">typeof</span> res</span><span class="p">.</span>body</span> != <span class="s1">'object'<span class="p">) <span class="p">{
+        res</span>.</span>setHeader</span><span class="p">([</span><span class="s1">'content-type'</span><span class="p">, <span class="s1">'application/json'<span class="p">])
+        res</span>.</span>body</span> =</span> <span class="p">{</span> <span class="nx">response</span><span class="o">:</span> <span class="nx">res</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">req<span class="p">.<span class="nx">url <span class="p">};
+    }
+    next</span><span class="p">();
+})
+app</span>.start<span class="p">();
+</pre>
+
+		</div>
+	</div>
+</body>
+</html>
