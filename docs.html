@@ -29,7 +29,7 @@
 <body>
 	<div class="container">
 		<div id="sidebar">
-			<h2 class="text-center">Vatican.js <br><small>(v 1.2.0) <br>Documentation</small></h2>	
+			<h2 class="text-center">Vatican.js <br><small>(v 1.2.2) <br>Documentation</small></h2>	
 			<ul>
 				<li>
 					<a href="#basic-config">Basic configuration</a>
@@ -267,6 +267,10 @@ Hndlr</span>.</span>prototype</span><span class="p">.</span><span class="nx">new
 		<i class="fa fa-info-circle"></i> It is important to use the above object notation when writing the code of your handlers because <b>Vatican.js</b> needs to parse the code in order to capture the annotations and associate them to the right method. Currently other
 		types of object notations will not work with the endponits.</p>
 </div>
+<div class="alert alert-info">
+	<p>
+		<i class="fa fa-info-circle"></i> Handlers can receive a 3rd parameter: the next function. It can be use to trigger error handlers by calling it and passing it the error object.</p>
+</div>
 <h2 >
 <a  class="anchor" name="req-res"></a>Response &amp; Request</h2>
 <p >Each method associated to an endpoint, will receive 2 parameters on each request: the <b>request</b> and the <b>response</b> objects.
@@ -354,6 +358,9 @@ app.postprocess(function(req, res, next) {
 <a class="anchor" name="error-handler"></a>Error handlers</h3>
 <p >Just like Express, <b>Vatican.js</b> will grab any pre or post processors with 4 parameters and treat it like an error handler. <br>
 	To trigger the errors, the processor functions need to call <em>next</em> and pass it the error object.</p>
+<p>
+	The handler's methods can also trigger the error handlers, by calling <em>next</em> with the error object.
+</p>
 <p >Here is an example that uses several pre and post -processors and error handler</p>
 <pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
 
@@ -399,5 +406,15 @@ app</span>.start<span class="p">();
 
 		</div>
 	</div>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51233618-1', 'vaticanjs.info');
+  ga('send', 'pageview');
+
+</script>
 </body>
 </html>
