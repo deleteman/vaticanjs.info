@@ -90,12 +90,21 @@
 	background: #686666;
 }
 
-.second-footer h2 {
+.second-footer h2 ,
+.second-footer h3 {
 	font-family: 'Dosis', sans-serif;
 	color: #eee;
 }
+
+.second-footer h3 {
+	font-size:100%;
+}
 .second-footer img {
 	border-radius: 60px;
+}
+
+.second-footer .contributor-avatar {
+	border-radius: 0;
 }
 
 .second-footer .about-me {

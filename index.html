@@ -70,7 +70,7 @@
 						<span class="name">Vatican</span>.
 						<span class="extension">js</span>
 					</h1>
-					<h3 class="vatican-logo">v 1.2.5</h3>
+					<h3 class="vatican-logo">v 1.3.0</h3>
 				</div>
 				<div class="col-md-6 header-text">
 					"Creating an API was never this easy. Harness the power of <i>annotations</i> in Node.js to help you define your endpoints..."
@@ -87,6 +87,8 @@
 			<ul class="col-md-6">
 				<li>Micro-framework for creating REST APIs</li>
 				<li>Supports code annotations, to define the endpoints</li>
+				<li>MongoDB integration</li>
+				<li>Auto generate code for common endpoints (i.e: create, update, etc)</li>
 				<li>Command Line tool </li>
 				<li>Minimal dependencies (no Connect, no Express, just the absolute minimal)</li>
 				<li>Support for Connect middleware</li>
@@ -107,9 +109,12 @@
 				</div>
 				<div class="col-md-4 sub-step2">
 					<div class="number">2</div>
-					<h2>Create project and configure it</h2>
+					<h2>Generate <small>auto generate the basic code to get your app running</small></h2>
 					<p class="code">
 						$>vatican new project-name
+					</p>
+					<p class="code">
+						$>vatican g  books -a title:string description:string -a newBook:post list:get deleteBook:delete
 					</p>
 					<p>
 						Edit the <i>vatican-conf.json</i> file
@@ -118,7 +123,7 @@
 				</div>
 				<div class="col-md-4 row3 sub-step3">
 					<div class="number">3</div>
-					<h2>	Code it!</h2>
+					<h2>Customize it! <small>(code it!)</small></h2>
 					<p>
 						<img src="imgs/vatican-code.png"/>	
 					</p>
@@ -152,7 +157,10 @@
 					Hey there! Thanks for checking out the site. I'm a web developer from Uruguay and I've been trying to contribute to the OpenSource world in several ways over the years, <i>Vatican.js</i> being just one of them. 
 					<br/>
 					If you'd like to know more about that, check out <a href="http://www.lookingforpullrequests.com" target="_blank" >www.lookingforpullrequests.com</a>
-
+					<h3>Special thanks to...</h3>
+					<a href="https://github.com/smart--petea" target="_blank">
+						<img src="https://avatars3.githubusercontent.com/u/3399834?v=2&s=460" alt="Petru Badarau"  class="contributor-avatar" width="40"/><br>
+					</a>
 				</p>
 			</div>
 			<div class="clearfix"></div>

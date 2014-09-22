@@ -5,6 +5,9 @@
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link href="./css/site.css" rel="stylesheet" type="text/css">
 	<link href="./css/font-awesome.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/default.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+
 	<style type="text/css">
 		.container {
 			position: relative;
@@ -25,11 +28,14 @@
 			padding: 20px;
 		}
 	</style>
+	<script>
+		hljs.initHighlightingOnLoad();
+	</script>
 </head>
 <body>
 	<div class="container">
 		<div id="sidebar">
-			<h2 class="text-center">Vatican.js <br><small>(v 1.2.5) <br>Documentation</small></h2>	
+			<h2 class="text-center">Vatican.js <br><small>(v 1.3.0) <br>Documentation</small></h2>	
 			<ul>
 				<li>
 					<a href="#basic-config">Basic configuration</a>
@@ -37,6 +43,7 @@
 						<li><a href="#config-file">Default config file</a></li>
 						<li><a href="#overwrite-config">Overwriting config file</a></li>
 						<li><a href="#cors">CORS configuration</a></li>
+						<li><a href="#dbconfig">Database configuration</a></li>
 					</ul>
 				</li>
 				<li>
@@ -104,19 +111,22 @@ The configuration options are the following:</p>
 <em>cors</em> <em>(optional)</em>: CORS header options.</li>
 <li >
 <em>requestParser</em> <em>(optional)</em> : The path to the custom request parser file.</li>
+<li ><em>db</em> <em>(optional)</em> : The options for the database connecton (host and dbname)</li>
 </ul>
 <h3 >
 <a  class="anchor" name="overwrite-config"></a>Overwriting the config file</h3>
 <p >If the configuration for the server needs to be dynamic, then the json object can be passed to the constructor like so:</p>
-<pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
-
-var</span> app</span> = <span class="k">new vatican<span class="p">({
-    port</span>:</span> <span class="mi">9000<span class="p">,
-    handlers</span>:</span> <span class="s2">"./lib"<span class="p">,
-    cors</span>: <span class="kc">true
+<pre >
+<code>
+var vatican = require("vatican");
+var app = new vatican({
+    port:9000,
+    handlers:"./lib",
+    cors: true
 });
 
-app</span>.start<span class="p">();
+app.start();
+</code>
 </pre>
 <p ><em>If an object is received by the constructor, the config file will be ignored.</em></p>
 <h3 >
@@ -144,7 +154,8 @@ Access-Control-Allow-Origin: http://mydomain.com
 Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
 Access-Control-Allow-Headers: X-Foo
 
-<pre >var vatican = require("vatican");
+<pre ><code>
+var vatican = require("vatican");
 
 var app = new vatican({
     port:9000,
@@ -157,7 +168,28 @@ var app = new vatican({
 });
 
 app.start();
-</pre>
+</code></pre>
+</p>
+<h3 >
+<a  class="anchor" name="dbconfig"></a>Database configuration</h3>
+<p>
+	Vatican comes ready to connect to a MongoDB database. By default, it'll try to connect to localhost.
+	That configuration can be overwritten using the <b>db</b> key:
+
+<pre ><code>
+var vatican = require("vatican");
+
+var app = new vatican({
+    port:9000,
+    handlers: "./lib",
+    db: <b>{
+    	host: 'localhost',
+    	dbname: 'test-db'
+	}</b>
+});
+
+app.start();
+</code></pre>
 </p>
 <h2 >
 <a  class="anchor" name="cli"></a>Command line tool</h2>
@@ -179,8 +211,7 @@ app.start();
 <h3 >
 <a class="anchor" name="listing-routes"></a>Listing routes</h3>
 <p >The command to list all routes is:</p>
-<pre ><code>your-project-folder$ vatican list
-</code></pre>
+<pre ><code>your-project-folder$ vatican list</code></pre>
 <div class="alert alert-info">
 	<p ><i class="fa fa-info-circle"></i> By default, <b>Vatican.js</b> will read the configuration from the <em>vatican-config.json</em> file to determine where to read the handlers data from. 
 		<br>This configuration can be ovewritten by passing the "-h" modifier to the command:</p>
@@ -190,23 +221,83 @@ app.start();
 The output of this command will list all the routes, with their associated HTTP method, handler file and handler method used.
 <h3 >
 <a  class="anchor" name="new-handler"></a>Creating a new Handler</h3>
-<p >To add a new <a href="#handlers">handler</a> to the project, you just pass it's name and it's actions, like so:</p>
-<pre ><code>your-project-folder$ vatican g books list get delete newBook
+<p >To add a new <a href="#handlers">handler</a> to the project, you just pass it's name, attributes and it's actions, like so:</p>
+<pre ><code class="bash">your-project-folder$ vatican g books -a title:string isbn:string author:Author -m list:get getBook:get deleteBook:delete newBook:post
 </code></pre>
 <p >And a new handler file, called <em>books.js</em> will be saved inside your handlers folder, and will look like this:</p>
-<pre >function</span> Books() <span class="p">{}
-<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???) 
-Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">list</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+<pre ><code >
+module.exports = BooksHdlr;
 
-<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
-Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">get</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+function BooksHdlr(_model) { this.model = _model }
 
-<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
-Books</span>.</span>prototype</span><span class="p">.</span><span class="k">delete</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
+@endpoint (url: /books method: get)
+BooksHdlr.prototype.list = function(req, res, next) { 
+	var page = null, 
+		size = null
+	if(req.params.query.page || req.params.query.size) {
+		page = req.params.query.page || 0
+		size = req.params.query.size || 10
+	}
 
-<span class="err">@</span>endpoint</span> (</span>url<span class="o">: <span class="err">/books method: ???)
-Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">newBook</span> =</span> function</span><span class="p">(</span><span class="nx">req<span class="p">, <span class="nx">res<span class="p">) <span class="p">{}
-</pre>
+	var query = {}
+
+	var finder = this.model.find(query)
+
+	if(page !== null && size !== null) {
+		finder
+			.skip(page * size)
+			.limit(size)
+	}
+
+	finder.exec(function(err, list) {
+		if(err) return next(err)
+		res.send(list)
+	})
+
+}
+
+@endpoint (url: /books method: get)
+BooksHdlr.prototype.getBook = function(req, res, next) { }
+
+@endpoint (url: /books method: delete)
+BooksHdlr.prototype.deleteBook = function(req, res, next) { 
+	var id = req.params.query.id || req.params.url.id || req.params.body.id
+
+	this.model.remove({_id: id}, function(err) {
+		if(err) return next(err)
+		res.send({success: true})
+	})}
+
+	@endpoint (url: /books method: post)
+	BooksHdlr.prototype.newBook = function(req, res, next) { var data = req.params.body
+	//...maybe do validation here?
+	this.model.create(data, function(err, obj) {
+		if(err) return next(err)
+		res.send(obj)
+	})
+}
+
+</code></pre>
+
+And a new schema file will be created inside the <b>schemas</b> folder, that looks something like this:
+
+<pre><code>
+module.exports = function(mongoose) {
+	var Schema = mongoose.Schema
+
+
+	var SchemaObj = new Schema({
+		title: String,
+		isbn: String,
+		author: {
+			type: Schema.Types.ObjectId, 
+			ref: 'Author'
+		}
+	})
+
+	return mongoose.model('Books', SchemaObj)
+} 
+</code></pre>
 
 <div class="alert alert-info">
 	<p ><i class="fa fa-info-circle"></i> By default, <b>Vatican.js</b> will read the configuration from the <em>vatican-config.json</em> file to determine where to save the new handler file. 
@@ -214,7 +305,16 @@ Books</span>.</span>prototype</span><span class="p">.</span><span class="nx">new
 	<pre ><code>your-project-folder$ vatican g books list get delete newBook <b>-h ./customFolder</b>
 	</code></pre>
 </div>
-<p >The method on each endpoint will have to be manually set and the urls will have to be manually fixed by the developer.</p>
+
+<div class="alert alert-info">
+	<p ><i class="fa fa-info-circle"></i> By default, <b>Vatican.js</b> will try to auto-generate the code for each method based on it's name. So if the action's name is related to one of the CRUD actions + listing, then it'll add the code, otherwise it'll leave the method empty for the developer to code.
+	</p>
+</div>
+
+<div class="alert alert-warning">
+	<p ><i class="fa fa-info-circle"></i>  The urls of the endpoints won't be affected, so the developer will have to go over them to make sure they make sense.
+	</p>
+</div>
 
 <h2 >
 <a class="anchor" name="anno"></a>Annotations</h2>
@@ -223,11 +323,12 @@ The parameters supported by this annotation are:</p>
 <ul class="task-list unchanged">
 <li >url: The url that represents the endpoint, can have url parameters, in the form of :name (i.e: /books/:id). These parameters will be available inside the request attribute received by the associated method.</li>
 <li >method: The HTTP Access method used.</li>
+<li >name(optional): This attribute allows the developer to name the endpoint, making it easy to specify endpoint specific pre-processors later on.</li>
 </ul>
 Here is an example of a method being associated to an endpoint:
 <code><pre>
 	//....
-	<b>@endpoint (url:/books method: post)</b>
+	<b>@endpoint (url:/books method: post name: new-book)</b>
 	BooksHandler.prototype.newBook = function(req, res) {
 		//code goes here...
 	}	
@@ -238,7 +339,8 @@ Here is an example of a method being associated to an endpoint:
 	<br>You can think of handlers like controllers, if you like MVC, they will 
 hold the methods that will be called on each request, what you do inside them, is up to you.</p>
 <p >Here is an example of a regular handler:</p>
-<pre >module</span>.</span>exports = <span class="nx">hndlr<span class="p">;
+<pre ><code>
+module</span>.</span>exports = <span class="nx">hndlr<span class="p">;
 
 function</span> Hndlr<span class="p">(){
 
@@ -261,11 +363,11 @@ Hndlr</span>.</span>prototype</span><span class="p">.</span><span class="nx">new
     res</span>.</span>statusCode = <span class="mi">401<span class="p">;
     res</span>.</span>send</span><span class="p">(<span class="s2">"New book not implemented!"<span class="p">);
 }
-</pre>
+</code></pre>
 <div class="alert alert-info">
 	<p>
 		<i class="fa fa-info-circle"></i> It is important to use the above object notation when writing the code of your handlers because <b>Vatican.js</b> needs to parse the code in order to capture the annotations and associate them to the right method. Currently other
-		types of object notations will not work with the endponits.</p>
+		types of object notations will not work with the endpoints.</p>
 </div>
 <div class="alert alert-info">
 	<p>
@@ -329,6 +431,25 @@ app.preprocess(function(req, res, next) {
 })	
 </code></pre>
 </p>
+<h4>Endpoint-specific pre-processors</h4>
+<p>	
+	When adding a pre-processor, we have the ability to only trigger it on specific endpoints, by using the endpoint's name (see above).
+	<br>
+	Here's an example of an endpoint-specific preprocessor
+	<pre><code>
+var vatican = require("vatican");
+
+var app = new vatican();	
+
+app.preprocess(function(req, res, next) {
+    if(req.params.query.key === '123') { //we require a key to access all endpoints
+        next();
+    } else {
+        next("Error: invalid key") //Calls the error handlers queue
+    }
+}, <b>['login', 'books-list']</b>)	
+	</code></pre>
+</p >
 <h3 >
 <a  class="anchor" name="post-pro"></a>Response Post-Processors</h3>
 <p >Just like the <a href="#pre-pro">pre-processors</a>, only they run after the <em>req.send</em> call. <br>
@@ -362,7 +483,8 @@ app.postprocess(function(req, res, next) {
 	The handler's methods can also trigger the error handlers, by calling <em>next</em> with the error object.
 </p>
 <p >Here is an example that uses several pre and post -processors and error handler</p>
-<pre >var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
+<pre ><code>
+var</span> vatican</span> =</span> require<span class="p">(<span class="s2">"vatican"<span class="p">);
 
 var</span> app</span> = <span class="k">new vatican<span class="p">();
 
@@ -402,7 +524,7 @@ app</span>.</span>postprocess</span><span class="p">(</span>function</span><span
     next</span><span class="p">();
 })
 app</span>.start<span class="p">();
-</pre>
+</code></pre>
 
 		</div>
 	</div>
